@@ -4,22 +4,21 @@ import time
 from game import Game2048
 
 
-class RandomSolver:
+class StatisticsLogger:
     """
-    Solver that selects random moves in the 2048 game and logs statistics.
+    Class for logging and saving statistics of AI solvers.
     """
 
-    def __init__(self, num_games=30):
+    def __init__(self, solver_name, num_games):
         """
-        Initialize the solver with the number of games to be played.
+        Initialize the logger.
 
         Args:
-            num_games (int): Number of games to be played.
+            solver_name (str): Name of the solver being used.
+            num_games (int): Number of games played.
         """
+        self.solver_name = solver_name
         self.num_games = num_games
-        self.moves = ['W', 'A', 'S', 'D']  # Possible moves
-
-        # Statistics
         self.scores = []
         self.max_tiles = []
         self.max_tile_games = []
@@ -29,46 +28,28 @@ class RandomSolver:
         self.wins = 0
         self.execution_time = 0
 
-    def solve_one_game(self, game_number):
+    def record_game(self, game_number, score, max_tile, move_counts, total_moves):
         """
-        Play one game using a random solver and collect statistics.
+        Store statistics for a single game.
+
+        Args:
+            game_number (int): The number of the game.
+            score (int): The final score of the game.
+            max_tile (int): The highest tile achieved in the game.
+            move_counts (dict): Number of moves per direction.
+            total_moves (int): Total number of moves in the game.
         """
-        game = Game2048()
-        moves_count = {'W': 0, 'A': 0, 'S': 0, 'D': 0}
-        total_moves = 0
-
-        while not game.is_game_over():
-            move = random.choice(self.moves)
-            if game.play_turn(move):
-                moves_count[move] += 1
-                total_moves += 1
-
-        self.scores.append(game.score)
+        self.scores.append(score)
         self.score_games.append(game_number)
-        max_tile = np.max(game.board)
         self.max_tiles.append(max_tile)
         self.max_tile_games.append(game_number)
         self.total_moves_per_game.append(total_moves)
 
         for key in self.move_counts:
-            self.move_counts[key] += moves_count[key]
+            self.move_counts[key] += move_counts[key]
 
-        if 2048 in game.board:
+        if 2048 in self.max_tiles:
             self.wins += 1
-
-    def run(self):
-        """
-        Play multiple games and compute statistics, measuring execution time.
-        """
-        start_time = time.time()
-
-        for game_number in range(1, self.num_games + 1):
-            self.solve_one_game(game_number)
-
-        self.execution_time = time.time() - start_time
-
-        self.log_results()
-        self.save_results_to_readme()
 
     def log_results(self):
         """
@@ -81,7 +62,7 @@ class RandomSolver:
         worst_score = min(self.scores)
         worst_score_game = self.score_games[self.scores.index(worst_score)]
 
-        print("\n===== Random Solver Statistics =====")
+        print(f"\n===== {self.solver_name} Solver Statistics =====")
         print(f"Number of games: {self.num_games}")
         print(f"Wins (reaching 2048): {self.wins}/{self.num_games}")
         print(f"Best score: {best_score} (game {best_score_game})")
@@ -108,7 +89,7 @@ class RandomSolver:
         worst_score_game = self.score_games[self.scores.index(worst_score)]
 
         with open(filename, "w") as file:
-            file.write("# 2048 AI Solver - Random Strategy\n\n")
+            file.write(f"# 2048 AI Solver - {self.solver_name}\n\n")
             file.write("## Latest Performance Results\n\n")
             file.write(f"- **Number of games:** {self.num_games}\n")
             file.write(f"- **Wins (reaching 2048):** {self.wins}/{self.num_games}\n")
@@ -116,7 +97,8 @@ class RandomSolver:
             file.write(f"- **Worst score:** {worst_score} (game {worst_score_game})\n")
             file.write(f"- **Average score:** {sum(self.scores) / self.num_games:.2f}\n")
             file.write(f"- **Highest tile achieved:** {max_tile} (game {max_tile_game})\n")
-            file.write(f"- **Average number of moves per game:** {sum(self.total_moves_per_game) / self.num_games:.2f}\n")
+            file.write(
+                f"- **Average number of moves per game:** {sum(self.total_moves_per_game) / self.num_games:.2f}\n")
             file.write(f"- **Total execution time:** {self.execution_time:.2f} seconds\n\n")
 
             file.write("### Move Averages:\n")
@@ -124,3 +106,37 @@ class RandomSolver:
                 file.write(f"- **{move}:** {count / self.num_games:.2f} moves per game\n")
 
             file.write("\n_Last updated automatically after the last test run._\n")
+
+
+class RandomSolver:
+    """
+    Random solver for the 2048 game.
+    """
+
+    def __init__(self, num_games=30):
+        self.logger = StatisticsLogger(solver_name="RandomSolver", num_games=num_games)
+        self.num_games = num_games
+        self.moves = ['W', 'A', 'S', 'D']
+
+    def solve_one_game(self, game_number):
+        game = Game2048()
+        move_counts = {'W': 0, 'A': 0, 'S': 0, 'D': 0}
+        total_moves = 0
+
+        while not game.is_game_over():
+            move = random.choice(self.moves)
+            if game.play_turn(move):
+                move_counts[move] += 1
+                total_moves += 1
+
+        self.logger.record_game(game_number, game.score, np.max(game.board), move_counts, total_moves)
+
+    def run(self):
+        start_time = time.time()
+
+        for game_number in range(1, self.num_games + 1):
+            self.solve_one_game(game_number)
+
+        self.logger.execution_time = time.time() - start_time
+        self.logger.log_results()
+        self.logger.save_results_to_readme()
