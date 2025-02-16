@@ -1,0 +1,14 @@
+===== Random Solver Statistics =====
+Number of games: 1000
+Wins (reaching 2048): 0/1000
+Best score: 3232 (game 354)
+Worst score: 132 (game 591)
+Average score: 951.92
+Highest tile achieved: 256 (game 60)
+Average number of moves per game: 112.85
+Total execution time: 2.52 seconds
+Average moves W: 28.33
+Average moves A: 28.23
+Average moves S: 28.01
+Average moves D: 28.29
+===================================
