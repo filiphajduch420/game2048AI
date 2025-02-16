@@ -22,12 +22,12 @@ class RandomSolver:
         # Statistics
         self.scores = []
         self.max_tiles = []
-        self.max_tile_games = []  # Track which game had the max tile
-        self.score_games = []  # Track which game had the best/worst scores
-        self.move_counts = {'W': 0, 'A': 0, 'S': 0, 'D': 0}  # Move counts per direction
+        self.max_tile_games = []
+        self.score_games = []
+        self.move_counts = {'W': 0, 'A': 0, 'S': 0, 'D': 0}
         self.total_moves_per_game = []
-        self.wins = 0  # Number of wins (reaching 2048)
-        self.execution_time = 0  # Time measurement
+        self.wins = 0
+        self.execution_time = 0
 
     def solve_one_game(self, game_number):
         """
@@ -38,12 +38,11 @@ class RandomSolver:
         total_moves = 0
 
         while not game.is_game_over():
-            move = random.choice(self.moves)  # Random move selection
+            move = random.choice(self.moves)
             if game.play_turn(move):
                 moves_count[move] += 1
                 total_moves += 1
 
-        # Store statistics
         self.scores.append(game.score)
         self.score_games.append(game_number)
         max_tile = np.max(game.board)
@@ -55,7 +54,7 @@ class RandomSolver:
             self.move_counts[key] += moves_count[key]
 
         if 2048 in game.board:
-            self.wins += 1  # Count wins
+            self.wins += 1
 
     def run(self):
         """
@@ -69,7 +68,7 @@ class RandomSolver:
         self.execution_time = time.time() - start_time
 
         self.log_results()
-        self.save_results_to_file()
+        self.save_results_to_readme()
 
     def log_results(self):
         """
@@ -97,9 +96,9 @@ class RandomSolver:
 
         print("===================================")
 
-    def save_results_to_file(self, filename="results.txt"):
+    def save_results_to_readme(self, filename="README.md"):
         """
-        Save statistics from the games to a text file.
+        Save statistics from the games to a README file.
         """
         max_tile = max(self.max_tiles)
         max_tile_game = self.max_tile_games[self.max_tiles.index(max_tile)]
@@ -109,17 +108,19 @@ class RandomSolver:
         worst_score_game = self.score_games[self.scores.index(worst_score)]
 
         with open(filename, "w") as file:
-            file.write("===== Random Solver Statistics =====\n")
-            file.write(f"Number of games: {self.num_games}\n")
-            file.write(f"Wins (reaching 2048): {self.wins}/{self.num_games}\n")
-            file.write(f"Best score: {best_score} (game {best_score_game})\n")
-            file.write(f"Worst score: {worst_score} (game {worst_score_game})\n")
-            file.write(f"Average score: {sum(self.scores) / self.num_games:.2f}\n")
-            file.write(f"Highest tile achieved: {max_tile} (game {max_tile_game})\n")
-            file.write(f"Average number of moves per game: {sum(self.total_moves_per_game) / self.num_games:.2f}\n")
-            file.write(f"Total execution time: {self.execution_time:.2f} seconds\n")
+            file.write("# 2048 AI Solver - Random Strategy\n\n")
+            file.write("## Latest Performance Results\n\n")
+            file.write(f"- **Number of games:** {self.num_games}\n")
+            file.write(f"- **Wins (reaching 2048):** {self.wins}/{self.num_games}\n")
+            file.write(f"- **Best score:** {best_score} (game {best_score_game})\n")
+            file.write(f"- **Worst score:** {worst_score} (game {worst_score_game})\n")
+            file.write(f"- **Average score:** {sum(self.scores) / self.num_games:.2f}\n")
+            file.write(f"- **Highest tile achieved:** {max_tile} (game {max_tile_game})\n")
+            file.write(f"- **Average number of moves per game:** {sum(self.total_moves_per_game) / self.num_games:.2f}\n")
+            file.write(f"- **Total execution time:** {self.execution_time:.2f} seconds\n\n")
 
+            file.write("### Move Averages:\n")
             for move, count in self.move_counts.items():
-                file.write(f"Average moves {move}: {count / self.num_games:.2f}\n")
+                file.write(f"- **{move}:** {count / self.num_games:.2f} moves per game\n")
 
-            file.write("===================================\n")
+            file.write("\n_Last updated automatically after the last test run._\n")
