@@ -175,7 +175,6 @@ class MonteCarloSolver:
     """
 
     def __init__(self, num_games=30, simulations_per_move=10, max_simulation_depth=15):
-        print(f"MonteCarloSolver initialized with {num_games} games, {simulations_per_move} simulations per move, {max_simulation_depth} max depth.")
         self.logger = StatisticsLogger(solver_name="MonteCarloSolver", num_games=num_games)
         self.num_games = num_games
         self.simulations_per_move = simulations_per_move
@@ -217,7 +216,6 @@ class MonteCarloSolver:
 
             if np.array_equal(temp_game.board, game.board):
                 invalid_moves.add(move)
-                print(f"Move {move} did not change the board, trying another move.")
                 continue
 
             total_score = 0
@@ -225,7 +223,6 @@ class MonteCarloSolver:
                 total_score += self.simulate_game(temp_game, self.max_simulation_depth)
 
             avg_score = total_score / self.simulations_per_move
-            print(f"Move: {move}, Average Score: {avg_score}")
 
             if avg_score > best_average_score:
                 best_average_score = avg_score
@@ -235,8 +232,6 @@ class MonteCarloSolver:
             valid_moves = [move for move in self.moves if move not in invalid_moves]
             best_move = random.choice(valid_moves) if valid_moves else random.choice(self.moves)
 
-        print(f"Best Move: {best_move}, Best Average Score: {best_average_score}")
-        game.print_board()
         return best_move
 
     def solve_one_game(self, game_number):
@@ -252,8 +247,6 @@ class MonteCarloSolver:
             if game.play_turn(move):
                 move_counts[move] += 1
                 total_moves += 1
-                print(f"Game {game_number}, Move {total_moves}: {move}")
-                game.print_board()
 
         self.logger.record_game(game_number, game.score, np.max(game.board), move_counts, total_moves)
 
@@ -264,7 +257,111 @@ class MonteCarloSolver:
         start_time = time.time()
 
         for game_number in range(1, self.num_games + 1):
-            print(f"Starting game {game_number}")
+            self.solve_one_game(game_number)
+
+        self.logger.execution_time = time.time() - start_time
+        self.logger.log_results()
+        self.logger.save_results_to_readme()
+
+class HeuristicSolver:
+    """
+    Heuristic solver for 2048 game.
+    Uses predefined rules to make optimal decisions.
+    """
+
+    def __init__(self, num_games=30):
+        self.logger = StatisticsLogger(solver_name="HeuristicSolver", num_games=num_games)
+        self.num_games = num_games
+        self.moves = ['W', 'A', 'S', 'D']
+
+    def evaluate_board(self, board):
+        """
+        Improved heuristic function to evaluate board strength.
+        """
+        score = 0
+
+        # Prioritize empty spaces (fewer empty spaces = worse board)
+        empty_spaces = np.count_nonzero(board == 0)
+        score += empty_spaces * 10  # Weight of empty spaces
+
+        # Prefer highest tile in the top-left corner
+        highest_tile = np.max(board)
+        if board[0, 0] == highest_tile:
+            score += highest_tile * 10  # Large bonus for keeping high tile in corner
+
+        # Monotonicity
+        for row in board:
+            for i in range(3):
+                if row[i] > row[i + 1]:
+                    score += 1
+
+        for col in board.T:
+            for i in range(3):
+                if col[i] > col[i + 1]:
+                    score += 1
+
+        # Smoothness
+        for i in range(4):
+            for j in range(3):
+                score -= abs(board[i, j] - board[i, j + 1])
+                score -= abs(board[j, i] - board[j + 1, i])
+
+        return score
+
+    def choose_best_move(self, game):
+        """
+        Choose the best move based on heuristic evaluation.
+        """
+        best_move = None
+        best_score = -1
+        invalid_moves = set()
+
+        for move in self.moves:
+            temp_game = Game2048()
+            temp_game.board = np.copy(game.board)
+
+            if not temp_game.play_turn(move):
+                invalid_moves.add(move)
+                continue  # Skip invalid moves
+
+            if np.array_equal(temp_game.board, game.board):
+                invalid_moves.add(move)
+                continue
+
+            score = self.evaluate_board(temp_game.board)
+            if score > best_score:
+                best_score = score
+                best_move = move
+
+        if best_move is None:
+            valid_moves = [move for move in self.moves if move not in invalid_moves]
+            best_move = random.choice(valid_moves) if valid_moves else random.choice(self.moves)
+
+        return best_move
+
+    def solve_one_game(self, game_number):
+        """
+        Solve a single game using heuristic evaluation.
+        """
+        game = Game2048()
+        move_counts = {'W': 0, 'A': 0, 'S': 0, 'D': 0}
+        total_moves = 0
+
+        while not game.is_game_over():
+            move = self.choose_best_move(game)
+            if game.play_turn(move):
+                move_counts[move] += 1
+                total_moves += 1
+
+        self.logger.record_game(game_number, game.score, np.max(game.board), move_counts, total_moves)
+
+    def run(self):
+        """
+        Run multiple games and log statistics.
+        """
+        start_time = time.time()
+
+        for game_number in range(1, self.num_games + 1):
             self.solve_one_game(game_number)
 
         self.logger.execution_time = time.time() - start_time

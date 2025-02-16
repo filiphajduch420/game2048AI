@@ -1,32 +1,50 @@
+## 2048 Game Solver
+
 ## RandomSolver Solver Results
 - **Number of games:** 30
 - **Wins (reaching 2048):** 0/30
-- **Best score:** 1724 (game 5)
-- **Worst score:** 528 (game 23)
-- **Average score:** 988.13
-- **Highest tile achieved:** 128 (game 1)
-- **Average number of moves per game:** 117.23
+- **Best score:** 2772 (game 8)
+- **Worst score:** 284 (game 13)
+- **Average score:** 1074.67
+- **Highest tile achieved:** 256 (game 8)
+- **Average number of moves per game:** 122.30
 - **Total execution time:** 0.08 seconds
 
 ### Move Averages:
-- **W:** 30.10 moves per game
-- **A:** 29.23 moves per game
-- **S:** 29.30 moves per game
-- **D:** 28.60 moves per game
+- **W:** 31.83 moves per game
+- **A:** 28.73 moves per game
+- **S:** 29.87 moves per game
+- **D:** 31.87 moves per game
 
 ## MonteCarloSolver Solver Results
 - **Number of games:** 30
-- **Wins (reaching 2048):** 21/30
-- **Best score:** 25944 (game 10)
-- **Worst score:** 5520 (game 27)
-- **Average score:** 12118.53
-- **Highest tile achieved:** 2048 (game 10)
-- **Average number of moves per game:** 720.00
-- **Total execution time:** 181.02 seconds
+- **Wins (reaching 2048):** 17/30
+- **Best score:** 20648 (game 14)
+- **Worst score:** 2052 (game 24)
+- **Average score:** 11108.80
+- **Highest tile achieved:** 2048 (game 14)
+- **Average number of moves per game:** 666.60
+- **Total execution time:** 231.47 seconds
 
 ### Move Averages:
-- **W:** 180.23 moves per game
-- **A:** 183.57 moves per game
-- **S:** 173.23 moves per game
-- **D:** 182.97 moves per game
+- **W:** 166.13 moves per game
+- **A:** 165.60 moves per game
+- **S:** 167.60 moves per game
+- **D:** 167.27 moves per game
+
+## HeuristicSolver Solver Results
+- **Number of games:** 30
+- **Wins (reaching 2048):** 0/30
+- **Best score:** 3872 (game 23)
+- **Worst score:** 748 (game 27)
+- **Average score:** 2254.13
+- **Highest tile achieved:** 256 (game 1)
+- **Average number of moves per game:** 211.13
+- **Total execution time:** 1.26 seconds
+
+### Move Averages:
+- **W:** 110.90 moves per game
+- **A:** 98.53 moves per game
+- **S:** 1.13 moves per game
+- **D:** 0.57 moves per game
 
