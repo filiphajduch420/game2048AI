@@ -79,7 +79,7 @@ class StatisticsLogger:
 
     def save_results_to_readme(self, filename="README.md"):
         """
-        Save statistics from the games to a README file.
+        Append solver statistics to the README file instead of overwriting it.
         """
         max_tile = max(self.max_tiles)
         max_tile_game = self.max_tile_games[self.max_tiles.index(max_tile)]
@@ -88,24 +88,51 @@ class StatisticsLogger:
         worst_score = min(self.scores)
         worst_score_game = self.score_games[self.scores.index(worst_score)]
 
+        # Read existing content of README.md
+        try:
+            with open(filename, "r") as file:
+                existing_content = file.readlines()
+        except FileNotFoundError:
+            existing_content = []
+
+        # Remove previous entry for this solver (if exists)
+        start_marker = f"## {self.solver_name} Solver Results\n"
+        end_marker = "## "  # Any other solver section starts with this
+        new_content = []
+        skip = False
+
+        for line in existing_content:
+            if line.startswith(start_marker):
+                skip = True  # Start skipping previous solver's data
+            elif skip and line.startswith(end_marker):
+                skip = False  # Stop skipping when another solver's section starts
+                new_content.append(line)
+            elif not skip:
+                new_content.append(line)
+
+        # Append new results
+        new_results = [
+            f"## {self.solver_name} Solver Results\n",
+            f"- **Number of games:** {self.num_games}\n",
+            f"- **Wins (reaching 2048):** {self.wins}/{self.num_games}\n",
+            f"- **Best score:** {best_score} (game {best_score_game})\n",
+            f"- **Worst score:** {worst_score} (game {worst_score_game})\n",
+            f"- **Average score:** {sum(self.scores) / self.num_games:.2f}\n",
+            f"- **Highest tile achieved:** {max_tile} (game {max_tile_game})\n",
+            f"- **Average number of moves per game:** {sum(self.total_moves_per_game) / self.num_games:.2f}\n",
+            f"- **Total execution time:** {self.execution_time:.2f} seconds\n",
+            "\n### Move Averages:\n",
+        ]
+
+        for move, count in self.move_counts.items():
+            new_results.append(f"- **{move}:** {count / self.num_games:.2f} moves per game\n")
+
+        new_results.append("\n")
+
+        # Write updated content back
         with open(filename, "w") as file:
-            file.write(f"# 2048 AI Solver - {self.solver_name}\n\n")
-            file.write("## Latest Performance Results\n\n")
-            file.write(f"- **Number of games:** {self.num_games}\n")
-            file.write(f"- **Wins (reaching 2048):** {self.wins}/{self.num_games}\n")
-            file.write(f"- **Best score:** {best_score} (game {best_score_game})\n")
-            file.write(f"- **Worst score:** {worst_score} (game {worst_score_game})\n")
-            file.write(f"- **Average score:** {sum(self.scores) / self.num_games:.2f}\n")
-            file.write(f"- **Highest tile achieved:** {max_tile} (game {max_tile_game})\n")
-            file.write(
-                f"- **Average number of moves per game:** {sum(self.total_moves_per_game) / self.num_games:.2f}\n")
-            file.write(f"- **Total execution time:** {self.execution_time:.2f} seconds\n\n")
-
-            file.write("### Move Averages:\n")
-            for move, count in self.move_counts.items():
-                file.write(f"- **{move}:** {count / self.num_games:.2f} moves per game\n")
-
-            file.write("\n_Last updated automatically after the last test run._\n")
+            file.writelines(new_content)
+            file.writelines(new_results)
 
 
 class RandomSolver:
