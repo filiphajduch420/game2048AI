@@ -1,6 +1,7 @@
 import random
 import numpy as np
 import time
+import matplotlib.pyplot as plt
 from game import Game2048
 
 
@@ -8,6 +9,24 @@ class StatisticsLogger:
     """
     Class for logging and saving statistics of AI solvers.
     """
+
+    def generate_graph(self, filename="results_graph.png"):
+        """
+        Generate a graph of the achieved scores for each solver.
+
+        Args:
+            filename (str): The filename to save the graph as.
+        """
+        plt.figure(figsize=(10, 6))
+        plt.plot(self.score_games, self.scores, label=self.solver_name, marker='o')
+
+        plt.xlabel('Measurement')
+        plt.ylabel('Score')
+        plt.title('Achieved Scores of Solvers')
+        plt.legend()
+        plt.grid(True)
+        plt.savefig(filename)
+        plt.close()
 
     def __init__(self, solver_name, num_games):
         """
