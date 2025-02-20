@@ -18,13 +18,6 @@ This project is a collection of solvers for the 2048 game. The solvers are imple
 - **S:** 30.47 moves per game
 - **D:** 28.23 moves per game
 
-## Graphs
-![RandomSolver Results](graphs/random_solver_results.png)
-![MonteCarloSolver Results](graphs/montecarlo_solver_results.png)
-![HeuristicSolver Results](graphs/heuristic_solver_results.png)
-![Average Scores](graphs/average_score_comparison.png)
-![Execution Tome](graphs/execution_time_comparison.png)
-![Win Rate](graphs/win_rate_comparison.png)
 ## RandomSolver Solver Results
 - **Number of games:** 30
 - **Wins (reaching 2048):** 0/30
@@ -72,6 +65,7 @@ This project is a collection of solvers for the 2048 game. The solvers are imple
 - **A:** 96.67 moves per game
 - **S:** 1.00 moves per game
 - **D:** 0.47 moves per game
+
 
 ## Graphs
 ![RandomSolver Results](graphs/random_solver_results.png)
