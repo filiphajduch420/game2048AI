@@ -1,25 +1,13 @@
 # 2048 Game with solvers
 This project is a collection of solvers for the 2048 game. The solvers are implemented in Python and use different strategies to play the game.
-#### Author: Filip Hajduch
-###### and ChatGPT
+
+## Implemented Solvers
+- **RandomSolver:** This solver makes random moves at each step.
+- **MonteCarloSolver:** Uses Monte Carlo simulations to estimate the best possible move by running multiple random simulations for each potential move.
+- **HeuristicSolver:** Uses predefined heuristics such as favoring empty tiles, keeping the highest value tile in the top-left corner, and maintaining monotonicity for better board structure.
 
 ## Statistics
-- **Number of games:** 30
-- **Wins (reaching 2048):** 0/30
-- **Best score:** 2632 (game 16)
-- **Worst score:** 256 (game 18)
-- **Average score:** 1031.07
-- **Highest tile achieved:** 256 (game 4)
-- **Average number of moves per game:** 117.27
-- **Total execution time:** 0.08 seconds
-
-### Move Averages:
-- **W:** 28.50 moves per game
-- **A:** 30.07 moves per game
-- **S:** 30.47 moves per game
-- **D:** 28.23 moves per game
-
-## RandomSolver Solver Results
+## RandomSolver Results
 - **Number of games:** 30
 - **Wins (reaching 2048):** 0/30
 - **Best score:** 2040 (game 4)
@@ -35,7 +23,7 @@ This project is a collection of solvers for the 2048 game. The solvers are imple
 - **S:** 26.27 moves per game
 - **D:** 27.37 moves per game
 
-## MonteCarloSolver Solver Results
+## MonteCarloSolver Results
 - **Number of games:** 30
 - **Wins (reaching 2048):** 20/30
 - **Best score:** 21116 (game 11)
@@ -51,7 +39,7 @@ This project is a collection of solvers for the 2048 game. The solvers are imple
 - **S:** 168.00 moves per game
 - **D:** 166.13 moves per game
 
-## HeuristicSolver Solver Results
+## HeuristicSolver Results
 - **Number of games:** 30
 - **Wins (reaching 2048):** 0/30
 - **Best score:** 3704 (game 30)
@@ -75,4 +63,9 @@ This project is a collection of solvers for the 2048 game. The solvers are imple
 ![Average Scores](graphs/average_score_comparison.png)
 ![Execution Tome](graphs/execution_time_comparison.png)
 ![Win Rate](graphs/win_rate_comparison.png)
+
+#### Author: Filip Hajduch
+###### and ChatGPT
+
+
 

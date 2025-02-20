@@ -159,7 +159,7 @@ class StatisticsLogger:
             existing_content = []
 
         # Remove previous entry for this solver (if exists)
-        start_marker = f"## {self.solver_name} Solver Results\n"
+        start_marker = f"## {self.solver_name} Results\n"
         end_marker = "## "  # Any other solver section starts with this
         new_content = []
         skip = False
