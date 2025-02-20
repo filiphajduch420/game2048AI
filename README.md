@@ -1,6 +1,7 @@
 # 2048 Game with solvers
 This project is a collection of solvers for the 2048 game. The solvers are implemented in Python and use different strategies to play the game.
 #### Author: Filip Hajduch
+###### and ChatGPT
 
 ## Statistics
 - **Number of games:** 30
